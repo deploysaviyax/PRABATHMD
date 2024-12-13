@@ -1,0 +1,39 @@
+
+name: Deploy PRABATHMD Bot
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install PM2
+      run: npm install -g pm2
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Deploy Application
+      run: pm2 start start.js --deep-monitoring --attach --name wabot-prabathmd
+
+    - name: Save PM2 Process
+      run: pm2 save
+
+    - name: Restart PM2 (if needed)
+      run: pm2 resurrect
+
+
+  
